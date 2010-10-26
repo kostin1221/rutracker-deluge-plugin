@@ -19,7 +19,6 @@ Simple transliteration
 """
 
 import re
-from pytils.utils import takes, returns
 
 TRANSTABLE = (
         (u"'", u"'"),
@@ -146,8 +145,6 @@ RU_ALPHABET = [x[0] for x in TRANSTABLE] #: Russian alphabet that we can transla
 EN_ALPHABET = [x[1] for x in TRANSTABLE] #: English alphabet that we can detransliterate
 ALPHABET = RU_ALPHABET + EN_ALPHABET #: Alphabet that we can (de)transliterate
 
-@takes(unicode)
-@returns(str)
 def translify(in_string):
     """
     Translify russian text
@@ -174,8 +171,6 @@ def translify(in_string):
 
     return translit
 
-@takes(basestring)
-@returns(unicode)
 def detranslify(in_string):
     """
     Detranslify
@@ -203,8 +198,6 @@ def detranslify(in_string):
 
     return russian
 
-@takes(basestring)
-@returns(str)
 def slugify(in_string):
     """
     Prepare string for slug (i.e. URL or file/dir name)

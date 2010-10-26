@@ -45,6 +45,7 @@ from deluge.core.rpcserver import export
 import urllib2
 import re
 import os
+import translit
 
 from HTMLParser import HTMLParser
 
@@ -109,17 +110,17 @@ class Core(CorePluginBase):
     def _on_torrent_added(self, torrent_id):
         """called on torrent add event"""
         #get the torrent by torrent_id
-
         torrent = component.get("TorrentManager")[torrent_id]
-
-        torrent_name = torrent.get_status(["name"])["name"]
+        if torrent.get_status(["active_time"])["active_time"] > 2:
+            return
+        
+#        torrent_name = torrent.get_status(["name"])["name"]
         torrent_comment = torrent.torrent_info.comment().decode("utf8", "ignore")
 
         if torrent_comment.startswith("http://rutracker.org/forum/viewtopic.php?t="):
 
-
             try: ulo = urllib2.urlopen(torrent_comment)
-            except URLError, e:
+            except urllib2.URLError, e:
                 print e.reason
 
             html_text = ulo.read().decode('cp1251')
@@ -136,24 +137,17 @@ class Core(CorePluginBase):
                 dest_path = os.path.join(dest_path, razdel)
 
             options = torrent.get_options()
-           # print torrent.state
 
-          #  if torrent.is_seed:
-          #      print "seeded\n"
-
-       #     new_options = {"move_completed" : True}
-            if not options["move_completed_path"].endswith(dest_path):
-                if options["move_completed"]:
-                    dest_path = os.path.join(options["move_completed_path"], dest_path)
-                else:
-                    dest_path = os.path.join(options["download_location"], dest_path)
-
+            if options["move_completed"]:
+                dest_path = os.path.join(options["move_completed_path"], dest_path)
+            else:
+                dest_path = os.path.join(options["download_location"], dest_path)
             print dest_path
-            options["move_completed_path"] = dest_path
-            options["move_completed"] = True
-            torrent.set_options(options)
+            if  self.config["translite"]:
+                dest_path = translit.translify(dest_path.decode("utf-8"))
 
-        print "added torrent: " + torrent_name
-        #print "\n" + torrent.get_status(["name"])["comment"]
-        print torrent_comment
+            if not os.path.exists(dest_path):
+                os.makedirs(dest_path)
+            torrent.set_move_completed(True)
+            torrent.set_move_completed_path(dest_path)
 

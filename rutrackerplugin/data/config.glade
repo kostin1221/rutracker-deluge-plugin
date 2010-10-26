@@ -4,22 +4,19 @@
   <!-- interface-naming-policy toplevel-contextual -->
   <widget class="GtkWindow" id="window1">
     <child>
-      <widget class="GtkHBox" id="prefs_box">
+      <widget class="GtkVBox" id="prefs_box">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
-          <widget class="GtkLabel" id="label1">
-            <property name="label" translatable="yes">Test config value:</property>
+          <widget class="GtkCheckButton" id="check_translite">
+            <property name="label" translatable="yes">&#x41F;&#x443;&#x442;&#x44C; &#x432; &#x442;&#x440;&#x430;&#x43D;&#x441;&#x43B;&#x438;&#x442;&#x435;</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="draw_indicator">True</property>
           </widget>
           <packing>
             <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <widget class="GtkEntry" id="txt_test">
-            <property name="can_focus">True</property>
-          </widget>
-          <packing>
-            <property name="position">1</property>
           </packing>
         </child>
       </widget>
